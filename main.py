@@ -28,21 +28,24 @@ player_image = load_image('player.png')
 
 
 def generate_level(level):
-    print(level[0])
-    for x in range(len(level[0])):
-        if level[0][x] == '!':
-            Tile('prep', x, 605)
-        elif level[0][x] == '@':
-            Tile('normal', x, 605)
+    for y in range(len(level)):
+        for x in range(len(level[y])):
+            if level[y][x] == '!':
+                Tile('prep', x, y)
+            elif level[y][x] == '@':
+                Tile('normal', x, y)
 
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
-        super().__init__(tiles_group, all_sprites, prep_group, normal_group)
+        super().__init__(tiles_group, all_sprites)
         self.tile_type = tile_type
         self.image = tile_images[tile_type]
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect().move(
-            55 * pos_x + 70, pos_y)
+            55 * pos_x + 150, 605 - (55 * pos_y))
+        if tile_type == 'normal':
+            self.floor = pos_y + 1
 
 
 class Player(pygame.sprite.Sprite):
@@ -50,27 +53,34 @@ class Player(pygame.sprite.Sprite):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.isJump = False
-        self.jumpCount = 9
+        self.jumpCount = 32
         super().__init__(player_group, all_sprites)
         self.image = player_image
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
 
     def update(self):
-        if self.isJump:
-            if self.jumpCount >= -9:
-                if self.jumpCount < 0:
-                    self.rect.y += (self.jumpCount ** 2) / 2
-                else:
-                    self.rect.y -= (self.jumpCount ** 2) / 2
-                self.jumpCount -= 1
-            else:
-                self.isJump = False
-                self.jumpCount = 9
-                self.rect.x = player.pos_x
-                self.rect.y = player.pos_y
+        if not pygame.sprite.groupcollide(player_group, prep_group, True, True, pygame.sprite.collide_mask):
+            if self.isJump:
+                if self.jumpCount >= -32:
+                    if self.jumpCount < 0:
+                        self.rect.y += self.jumpCount ** 2 * 0.01
+                    else:
+                        self.rect.y -= self.jumpCount ** 2 * 0.01
+                    self.jumpCount -= 1
+                    if pygame.sprite.groupcollide(player_group, normal_group, False, False, pygame.sprite.collide_mask):
+                        ex = pygame.sprite.groupcollide(player_group, normal_group, False, False,
+                                                        pygame.sprite.collide_mask)
+                        self.rect.y = 605 - (55 * ex[list(ex)[0]][0].floor)
+                        self.isJump = False
+                        self.jumpCount = 32
 
-    def check(self):
-        pass
+                else:
+                    self.isJump = False
+                    self.jumpCount = 32
+                    self.rect.y = player.pos_y
+        else:
+            pygame.quit()
 
 
 def load_level(filename):
@@ -80,7 +90,7 @@ def load_level(filename):
 
     max_width = max(map(len, level_map))
 
-    return list(map(lambda x: x.ljust(max_width, '.'), level_map))
+    return list(map(lambda x: x.ljust(max_width, '.'), level_map))[::-1]
 
 
 fon_surf = pygame.image.load('data/fonner.png')
@@ -103,19 +113,23 @@ tile_images = {
 }
 if __name__ == '__main__':
     generate_level(load_level('map.txt'))
+    normal_group.add([i for i in tiles_group.sprites() if i.tile_type == 'normal'])
+    prep_group.add([i for i in tiles_group.sprites() if i.tile_type == 'prep'])
     while True:
         screen.blit(fon_surf, fon_rect)
+        for i in prep_group.sprites():
+            i.rect.x -= 6
+        for i in normal_group.sprites():
+            i.rect.x -= 6
         player_group.draw(screen)
         prep_group.draw(screen)
         normal_group.draw(screen)
-        tiles_group.draw(screen)
         player.update()
         for event in pygame.event.get():
             if event.type != pygame.QUIT:
-                if player.isJump == False:
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:
-                            player.isJump = True
+                if not player.isJump:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        player.isJump = True
             else:
                 pygame.quit()
         player.update()
