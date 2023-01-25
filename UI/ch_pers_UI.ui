@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CubeJumper</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1200</width>
+     <height>700</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../data/fonner.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>120</y>
+     <width>581</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../data/let.png</pixmap>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="p1">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>240</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player1.png</normaloff>../data/player1.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="p2">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>240</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player2.png</normaloff>../data/player2.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="p3">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>240</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player3.png</normaloff>../data/player3.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="p6">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>360</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player6.png</normaloff>../data/player6.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="p4">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>360</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player4.png</normaloff>../data/player4.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="p5">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>360</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player5.png</normaloff>../data/player5.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="p9">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>480</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player9.png</normaloff>../data/player9.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="p7">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>480</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player7.png</normaloff>../data/player7.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="p8">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>480</y>
+     <width>85</width>
+     <height>85</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+background: rgb(198, 190, 88);
+border-radius:25px;
+border: 1px solid rgb(198, 190, 88)
+}
+
+QPushButton:Pressed {
+background: rgb(168, 160, 58);
+border-radius:25px;
+border: 1px solid rgb(168, 160, 58)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../data/player8.png</normaloff>../data/player8.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>85</width>
+     <height>85</height>
+    </size>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">bg</string>
+   </attribute>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="bg"/>
+ </buttongroups>
+</ui>
