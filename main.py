@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+import time
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QWidget
@@ -10,6 +11,7 @@ clock = pygame.time.Clock()
 
 size = WIDTH, HEIGHT = 1200, 700
 screen = pygame.display.set_mode(size)
+dvig = True
 
 
 def load_image(name, colorkey=None):
@@ -28,7 +30,6 @@ def load_image(name, colorkey=None):
 
 
 player_image = load_image('player1.png')
-mapa = 'map.txt'
 
 
 class Wid_ch(QWidget):
@@ -79,32 +80,10 @@ class MyWidget(QWidget):
         self.pw = Wid_ch()
         self.pw.show()
 
-
     def start_fnc(self):
         ex.close()
-        generate_level(load_level(mapa))
-        normal_group.add([i for i in tiles_group.sprites() if i.tile_type == 'normal'])
-        prep_group.add([i for i in tiles_group.sprites() if i.tile_type == 'prep'])
-        while True:
-            screen.blit(fon_surf, fon_rect)
-            for i in prep_group.sprites():
-                i.rect.x -= 6
-            for i in normal_group.sprites():
-                i.rect.x -= 6
-            player_group.draw(screen)
-            prep_group.draw(screen)
-            normal_group.draw(screen)
-            player.update()
-            for event in pygame.event.get():
-                if event.type != pygame.QUIT:
-                    if not player.isJump:
-                        if event.type == pygame.MOUSEBUTTONDOWN:
-                            player.isJump = True
-                else:
-                    pygame.quit()
-            player.update()
-            clock.tick(60)
-            pygame.display.flip()
+        self.ch_lvl = Ch_lvl()
+        self.ch_lvl.show()
 
 
 def generate_level(level):
@@ -114,6 +93,8 @@ def generate_level(level):
                 Tile('prep', x, y)
             elif level[y][x] == '@':
                 Tile('normal', x, y)
+            elif level[y][x] == '?':
+                Tile('vixod', x, y)
 
 
 class Tile(pygame.sprite.Sprite):
@@ -122,8 +103,13 @@ class Tile(pygame.sprite.Sprite):
         self.tile_type = tile_type
         self.image = tile_images[tile_type]
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect().move(
-            55 * pos_x + 550, 605 - (55 * pos_y))
+        if tile_type == 'vixod':
+            self.rect = self.image.get_rect().move(
+                55 * pos_x + 550, 605 - 60)
+        else:
+            self.rect = self.image.get_rect().move(
+                55 * pos_x + 550, 605 - (55 * pos_y))
+        self.start_pos_x = 55 * pos_x + 550
         if tile_type == 'normal':
             self.floor = pos_y + 1
 
@@ -140,27 +126,55 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        if not pygame.sprite.groupcollide(player_group, prep_group, True, True, pygame.sprite.collide_mask):
-            if self.isJump:
-                if self.jumpCount >= -32:
-                    if self.jumpCount < 0:
-                        self.rect.y += self.jumpCount ** 2 * 0.01
+        global dvig
+        global ex
+        if not pygame.sprite.groupcollide(player_group, exit_group, False, False,
+                                          pygame.sprite.collide_mask):
+            if not pygame.sprite.groupcollide(player_group, prep_group, False, False,
+                                              pygame.sprite.collide_mask) and not pygame.sprite.groupcollide(
+                player_group,
+                normal_group,
+                False, False,
+                pygame.sprite.collide_mask) and not self.isJump:
+                self.rect.x = 70
+                self.rect.y = 605
+            if not pygame.sprite.groupcollide(player_group, prep_group, False, False, pygame.sprite.collide_mask):
+                if self.isJump:
+                    if self.jumpCount >= -32:
+                        if self.jumpCount < 0:
+                            self.rect.y += self.jumpCount ** 2 * 0.01
+                        else:
+                            self.rect.y -= self.jumpCount ** 2 * 0.01
+                        self.jumpCount -= 1
+                        if pygame.sprite.groupcollide(player_group, normal_group, False, False,
+                                                      pygame.sprite.collide_mask):
+                            ex = pygame.sprite.groupcollide(player_group, normal_group, False, False,
+                                                            pygame.sprite.collide_mask)
+                            self.rect.y = 605 - (55 * ex[list(ex)[0]][0].floor) + 3
+                            self.isJump = False
+                            self.jumpCount = 32
                     else:
-                        self.rect.y -= self.jumpCount ** 2 * 0.01
-                    self.jumpCount -= 1
-                    if pygame.sprite.groupcollide(player_group, normal_group, False, False, pygame.sprite.collide_mask):
-                        ex = pygame.sprite.groupcollide(player_group, normal_group, False, False,
-                                                        pygame.sprite.collide_mask)
-                        self.rect.y = 605 - (55 * ex[list(ex)[0]][0].floor)
                         self.isJump = False
                         self.jumpCount = 32
-
-                else:
-                    self.isJump = False
-                    self.jumpCount = 32
-                    self.rect.y = player.pos_y
+                        self.rect.y = player.pos_y
+            else:
+                time.sleep(0.3)
+                self.rect.x = 70
+                self.rect.y = 605
+                self.isJump = False
+                self.jumpCount = 32
+                for i in normal_group.sprites():
+                    i.rect.x = i.start_pos_x
+                for i in prep_group.sprites():
+                    i.rect.x = i.start_pos_x
+                for i in exit_group.sprites():
+                    i.rect.x = i.start_pos_x
         else:
-            pygame.quit()
+            if dvig == True:
+                dvig = False
+                ex.msg = Win_Msg()
+                ex.msg.show()
+                exit_group.sprites()[0].kill()
 
 
 def load_level(filename):
@@ -173,6 +187,76 @@ def load_level(filename):
     return list(map(lambda x: x.ljust(max_width, '.'), level_map))[::-1]
 
 
+class Ch_lvl(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UI/go_UI.ui', self)
+        self.next.clicked.connect(self.next_fnc)
+        self.back.clicked.connect(self.back_fnc)
+        self.go.clicked.connect(self.go_fnc)
+
+    def go_fnc(self):
+        ex.ch_lvl.close()
+        pygame.display.set_caption('CubeJumper')
+        if self.sw.currentIndex() == 0:
+            generate_level(load_level('map.txt'))
+        elif self.sw.currentIndex() == 1:
+            generate_level(load_level('map2.txt'))
+        normal_group.add([i for i in tiles_group.sprites() if i.tile_type == 'normal'])
+        prep_group.add([i for i in tiles_group.sprites() if i.tile_type == 'prep'])
+        exit_group.add([i for i in tiles_group.sprites() if i.tile_type == 'vixod'])
+        while True:
+            screen.blit(fon_surf, fon_rect)
+            if dvig:
+                for i in prep_group.sprites():
+                    i.rect.x -= 6
+                for i in normal_group.sprites():
+                    i.rect.x -= 6
+                for i in exit_group.sprites():
+                    i.rect.x -= 6
+            player_group.draw(screen)
+            prep_group.draw(screen)
+            normal_group.draw(screen)
+            exit_group.draw(screen)
+            player.update()
+            for event in pygame.event.get():
+                if event.type != pygame.QUIT:
+                    if not player.isJump:
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            player.isJump = True
+                else:
+                    pygame.quit()
+            player.update()
+            clock.tick(60)
+            pygame.display.flip()
+
+    def next_fnc(self):
+        try:
+            self.sw.setCurrentIndex(self.sw.currentIndex() + 1)
+        except Exception:
+            pass
+
+    def back_fnc(self):
+        try:
+            self.sw.setCurrentIndex(self.sw.currentIndex() - 1)
+        except Exception:
+            pass
+
+
+class Win_Msg(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UI/msg_UI.ui', self)
+        self.back.clicked.connect(self.back_fnc)
+
+    def back_fnc(self):
+        global dvig
+        global cikl
+        dvig = True
+        ex.show()
+        self.close()
+
+
 fon_surf = pygame.image.load('data/fonner.png')
 fon_rect = fon_surf.get_rect()
 screen.blit(fon_surf, fon_rect)
@@ -182,6 +266,7 @@ player_group = pygame.sprite.Group()
 prep_group = pygame.sprite.Group()
 normal_group = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
+exit_group = pygame.sprite.Group()
 
 player = Player(70, 605)
 player.rect.x = player.pos_x
@@ -189,7 +274,8 @@ player.rect.y = player.pos_y
 
 tile_images = {
     'prep': load_image('triangle.png'),
-    'normal': load_image('box.png')
+    'normal': load_image('box.png'),
+    'vixod': load_image('exit.png')
 }
 
 
