@@ -2,6 +2,9 @@ import pygame
 import os
 import sys
 
+from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication, QWidget
+
 FPS = 60
 clock = pygame.time.Clock()
 
@@ -24,7 +27,84 @@ def load_image(name, colorkey=None):
     return image
 
 
-player_image = load_image('player.png')
+player_image = load_image('player1.png')
+mapa = 'map.txt'
+
+
+class Wid_ch(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UI/ch_pers_UI.ui', self)
+        self.bg.buttonClicked.connect(self.ch_fnc)
+
+    def ch_fnc(self, btn):
+        global player_image
+        global player
+        global player_group
+        if btn == self.p1:
+            player_image = load_image('player1.png')
+        elif btn == self.p2:
+            player_image = load_image('player2.png')
+        elif btn == self.p3:
+            player_image = load_image('player3.png')
+        elif btn == self.p4:
+            player_image = load_image('player4.png')
+        elif btn == self.p5:
+            player_image = load_image('player5.png')
+        elif btn == self.p6:
+            player_image = load_image('player6.png')
+        elif btn == self.p7:
+            player_image = load_image('player7.png')
+        elif btn == self.p8:
+            player_image = load_image('player8.png')
+        elif btn == self.p9:
+            player_image = load_image('player9.png')
+        player_group = pygame.sprite.Group()
+        player = Player(70, 605)
+        player.rect.x = player.pos_x
+        player.rect.y = player.pos_y
+        ex.pw.close()
+        ex.show()
+
+
+class MyWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('UI/start_UI.ui', self)
+        self.play_btn.clicked.connect(self.start_fnc)
+        self.pers_btn.clicked.connect(self.pers_fnc)
+
+    def pers_fnc(self):
+        ex.close()
+        self.pw = Wid_ch()
+        self.pw.show()
+
+
+    def start_fnc(self):
+        ex.close()
+        generate_level(load_level(mapa))
+        normal_group.add([i for i in tiles_group.sprites() if i.tile_type == 'normal'])
+        prep_group.add([i for i in tiles_group.sprites() if i.tile_type == 'prep'])
+        while True:
+            screen.blit(fon_surf, fon_rect)
+            for i in prep_group.sprites():
+                i.rect.x -= 6
+            for i in normal_group.sprites():
+                i.rect.x -= 6
+            player_group.draw(screen)
+            prep_group.draw(screen)
+            normal_group.draw(screen)
+            player.update()
+            for event in pygame.event.get():
+                if event.type != pygame.QUIT:
+                    if not player.isJump:
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            player.isJump = True
+                else:
+                    pygame.quit()
+            player.update()
+            clock.tick(60)
+            pygame.display.flip()
 
 
 def generate_level(level):
@@ -43,7 +123,7 @@ class Tile(pygame.sprite.Sprite):
         self.image = tile_images[tile_type]
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect().move(
-            55 * pos_x + 150, 605 - (55 * pos_y))
+            55 * pos_x + 550, 605 - (55 * pos_y))
         if tile_type == 'normal':
             self.floor = pos_y + 1
 
@@ -111,27 +191,15 @@ tile_images = {
     'prep': load_image('triangle.png'),
     'normal': load_image('box.png')
 }
+
+
+def except_hook(cls, exception, traceback):
+    sys.__excepthook__(cls, exception, traceback)
+
+
 if __name__ == '__main__':
-    generate_level(load_level('map.txt'))
-    normal_group.add([i for i in tiles_group.sprites() if i.tile_type == 'normal'])
-    prep_group.add([i for i in tiles_group.sprites() if i.tile_type == 'prep'])
-    while True:
-        screen.blit(fon_surf, fon_rect)
-        for i in prep_group.sprites():
-            i.rect.x -= 6
-        for i in normal_group.sprites():
-            i.rect.x -= 6
-        player_group.draw(screen)
-        prep_group.draw(screen)
-        normal_group.draw(screen)
-        player.update()
-        for event in pygame.event.get():
-            if event.type != pygame.QUIT:
-                if not player.isJump:
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        player.isJump = True
-            else:
-                pygame.quit()
-        player.update()
-        clock.tick(60)
-        pygame.display.flip()
+    app = QApplication(sys.argv)
+    ex = MyWidget()
+    ex.show()
+    sys.excepthook = except_hook
+    sys.exit(app.exec_())
