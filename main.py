@@ -172,8 +172,8 @@ class Player(pygame.sprite.Sprite):
         else:
             if dvig == True:
                 dvig = False
-                ex.msg = Win_Msg()
-                ex.msg.show()
+                self.msg = Win_Msg()
+                self.msg.show()
                 exit_group.sprites()[0].kill()
 
 
@@ -251,8 +251,9 @@ class Win_Msg(QWidget):
 
     def back_fnc(self):
         global dvig
-        global cikl
+        global ex
         dvig = True
+        ex = MyWidget()
         ex.show()
         self.close()
 
