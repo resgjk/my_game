@@ -211,6 +211,7 @@ class Ch_lvl(QWidget):
         global fm
         ex.ch_lvl.close()
         pygame.mixer.music.play(-1)
+        pygame.display.set_icon(pygame.image.load("data/icon.png"))
         pygame.display.set_caption('CubeJumper')
         if self.sw.currentIndex() == 0:
             generate_level(load_level('map.txt'))
