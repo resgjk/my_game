@@ -163,7 +163,7 @@ class Player(pygame.sprite.Sprite):
                     else:
                         self.isJump = False
                         self.jumpCount = 32
-                        self.rect.y = player.pos_y
+                        self.rect.y = 605
             else:
                 pygame.mixer.music.stop()
                 dth.play()
