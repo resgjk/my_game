@@ -1,4 +1,5 @@
 import pygame
+
 import os
 import sys
 import time
@@ -6,12 +7,18 @@ import time
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QWidget
 
+pygame.init()
+
 FPS = 60
 clock = pygame.time.Clock()
 
 size = WIDTH, HEIGHT = 1200, 700
 screen = pygame.display.set_mode(size)
 dvig = True
+
+pygame.mixer.music.load('data/geometrydash.mp3')
+lc = pygame.mixer.Sound('data/level.mp3')
+dth = pygame.mixer.Sound('data/smerti.mp3')
 
 
 def load_image(name, colorkey=None):
@@ -158,6 +165,8 @@ class Player(pygame.sprite.Sprite):
                         self.jumpCount = 32
                         self.rect.y = player.pos_y
             else:
+                pygame.mixer.music.stop()
+                dth.play()
                 time.sleep(0.3)
                 self.rect.x = 70
                 self.rect.y = 605
@@ -169,8 +178,11 @@ class Player(pygame.sprite.Sprite):
                     i.rect.x = i.start_pos_x
                 for i in exit_group.sprites():
                     i.rect.x = i.start_pos_x
+                pygame.mixer.music.play(-1)
         else:
             if dvig == True:
+                pygame.mixer.music.stop()
+                lc.play()
                 dvig = False
                 self.msg = Win_Msg()
                 self.msg.show()
@@ -196,7 +208,9 @@ class Ch_lvl(QWidget):
         self.go.clicked.connect(self.go_fnc)
 
     def go_fnc(self):
+        global fm
         ex.ch_lvl.close()
+        pygame.mixer.music.play(-1)
         pygame.display.set_caption('CubeJumper')
         if self.sw.currentIndex() == 0:
             generate_level(load_level('map.txt'))
